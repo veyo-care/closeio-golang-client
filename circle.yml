@@ -1,0 +1,21 @@
+machine:
+  environment:
+    GOPATH_REPO: $HOME/.go_workspace/src/github.com/veyo-care/$CIRCLE_PROJECT_USERNAME
+    HOME_REPO: $HOME/${CIRCLE_PROJECT_REPONAME}
+  post:
+    - mkdir -p $GOPATH_REPO
+    - rsync -a --delete $HOME_REPO/ $GOPATH_REPO
+    - rm -rf $HOME_REPO
+    - ln -s $GOPATH_REPO $HOME_REPO
+
+dependencies:
+  pre:
+    - go get github.com/Masterminds/glide
+    - cd $GOPATH_REPO && glide up
+  override:
+    - go build
+test:
+  override:
+    - go test $(glide novendor)
+
+      
