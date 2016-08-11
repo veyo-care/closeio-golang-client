@@ -29,17 +29,21 @@ func NewCloseIoClient(apiKey string) *HttpCloseIoClient {
 	return &HttpCloseIoClient{apiKey: apiKey}
 }
 
-func (c HttpCloseIoClient) SendLead(lead *Lead) error {
+func (c HttpCloseIoClient) SendLead(lead *Lead) (*Lead, error) {
 	content, _ := json.Marshal(lead)
 	body := bytes.NewBuffer(content)
 
-	_, err := c.getResponse("POST", "lead", nil, body)
+	responseBody, err := c.getResponse("POST", "lead", nil, body)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	return nil
+	var responseLead Lead
+	err = json.Unmarshal(responseBody, &responseLead)
+	if err != nil {
+		return nil, err
+	}
+	return &responseLead, nil
 }
 
 func (c HttpCloseIoClient) DeleteLead(leadID string) error {
@@ -93,7 +97,7 @@ func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, erro
 
 func convertQueryFields(queryFields map[string]string) string {
 	if queryFields == nil {
-		return nil
+		return ""
 	}
 
 	var query = ""
@@ -120,15 +124,22 @@ func (c HttpCloseIoClient) GetActivities(leadId string) ([]Activity, error) {
 	return ParseActivities(body)
 }
 
-func (c HttpCloseIoClient) SendMailActivity(activity *Activity) error {
-	if activity.Type != "Email" {
+func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
+	var path string
+	switch activity.Type {
+	case "Email":
+		path = "activity/email"
+	case "Note":
+		path = "activity/note"
+	case "Call":
+		path = "activity/call"
+	default:
 		return fmt.Errorf("Activity type %s is not supported for creation", activity.Type)
 	}
-
 	content, _ := json.Marshal(activity)
 	body := bytes.NewBuffer(content)
 
-	_, err := c.getResponse("POST", "activity/email", nil, body)
+	_, err := c.getResponse("POST", path, nil, body)
 
 	if err != nil {
 		return err
@@ -199,6 +210,30 @@ func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 
 	return opportunities, nil
 
+}
+
+func (c HttpCloseIoClient) SendTask(task *Task) error {
+	content, _ := json.Marshal(task)
+
+	body := bytes.NewBuffer(content)
+
+	_, err := c.getResponse("POST", "task", nil, body)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c HttpCloseIoClient) SendOpportunity(opportunity *Opportunity) error {
+	content, _ := json.Marshal(opportunity)
+
+	body := bytes.NewBuffer(content)
+
+	_, err := c.getResponse("POST", "opportunity", nil, body)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (c HttpCloseIoClient) getResponse(method, route string, query map[string]string, body io.Reader) ([]byte, error) {
