@@ -3,168 +3,169 @@ package closeio
 import "time"
 
 type Contact struct {
-	CreatedBy   string     `json:"created_by"`
-	DateCreated *time.Time `json:"date_created"`
-	DateUpdated *time.Time `json:"date_updated"`
-	Emails      []Email    `json:"emails"`
-	ID          string     `json:"id"`
-	Name        string     `json:"name"`
+	CreatedBy   string     `json:"created_by,omitempty"`
+	DateCreated *time.Time `json:"date_created,omitempty"`
+	DateUpdated *time.Time `json:"date_updated,omitempty"`
+	Emails      []Email    `json:"emails,omitempty"`
+	ID          string     `json:"id,omitempty"`
+	Name        string     `json:"name,omitempty"`
 	Phones      []Phone    `json:"phones,omitempty"`
-	Title       string     `json:"title"`
+	Title       string     `json:"title,omitempty"`
 }
 
 type Address struct {
-	City    string `json:"city"`
-	State   string `json:"state"`
-	Country string `json:"country"`
-	Zipcode string `json:"zipcode"`
+	City    string `json:"city,omitempty"`
+	State   string `json:"state,omitempty"`
+	Country string `json:"country,omitempty"`
+	Zipcode string `json:"zipcode,omitempty"`
 }
 
 type Email struct {
-	Email string `json:"email"`
-	Type  string `json:"type"`
+	Email string `json:"email,omitempty"`
+	Type  string `json:"type,omitempty"`
 }
 
 type Phone struct {
-	Phone          string `json:"phone"`
-	PhoneFormatted string `json:"phone_formatted"`
-	Type           string `json:"type"`
+	Phone          string `json:"phone,omitempty"`
+	PhoneFormatted string `json:"phone_formatted,omitempty"`
+	Type           string `json:"type,omitempty"`
 }
 
 type Activity struct {
-	Type string `json:"_type"`
-	ID   string `json:"id"`
+	Type string `json:"_type,omitempty"`
+	ID   string `json:"id,omitempty"`
 
 	//Email
 
-	Attachments         []Attachment `json:"attachments"`
-	Bcc                 []string     `json:"bcc"`
-	BodyHtml            string       `json:"body_html"`
-	BodyHtmlQuoted      HtmlQuoted   `json:"body_html_quoted"`
-	BodyPreview         string       `json:"body_preview"`
-	BodyText            string       `json:"body_text"`
-	BodyTextQuoted      TextQuoted   `json:"body_text_quoted"`
-	Cc                  []string     `json:"cc"`
-	ContactID           string       `json:"contact_id"`
-	DateScheduled       *time.Time   `json:"date_scheduled"`
-	DateSent            *time.Time   `json:"date_sent"`
-	EmailAccountID      string       `json:"email_account_id"`
-	Enveloppe           Enveloppe    `json:"enveloppe"`
-	InReplyToID         string       `json:"in_reply_to_id"`
-	LeadID              string       `json:"lead_id"`
-	MessageIDs          []string     `json:"message_ids"`
-	NeedSmtpCredentials bool         `json:"need_smtp_credentials"`
-	Opens               Opens        `json:"opens"`
-	OpensSummary        string       `json:"opens_summary"`
-	References          []string     `json:"references"`
-	SendAttempts        []string     `json:"send_attempts"`
-	Sender              string       `json:"sender"`
-	Status              string       `json:"status"`
-	Subject             string       `json:"subject"`
-	TemplateID          string       `json:"template_id"`
-	TemplateName        string       `json:"template_name"`
-	ThreadID            string       `json:"thread_id"`
-	To                  []string     `json:"to"`
+	Attachments         []Attachment `json:"attachments,omitempty"`
+	Bcc                 []string     `json:"bcc,omitempty"`
+	BodyHtml            string       `json:"body_html,omitempty"`
+	BodyHtmlQuoted      HtmlQuoted   `json:"body_html_quoted,omitempty"`
+	BodyPreview         string       `json:"body_preview,omitempty"`
+	BodyText            string       `json:"body_text,omitempty"`
+	BodyTextQuoted      TextQuoted   `json:"body_text_quoted,omitempty"`
+	Cc                  []string     `json:"cc,omitempty"`
+	ContactID           string       `json:"contact_id,omitempty"`
+	DateScheduled       *time.Time   `json:"date_scheduled,omitempty"`
+	DateSent            *time.Time   `json:"date_sent,omitempty"`
+	EmailAccountID      string       `json:"email_account_id,omitempty"`
+	Enveloppe           Enveloppe    `json:"enveloppe,omitempty"`
+	InReplyToID         string       `json:"in_reply_to_id,omitempty"`
+	LeadID              string       `json:"lead_id,omitempty"`
+	MessageIDs          []string     `json:"message_ids,omitempty"`
+	NeedSmtpCredentials bool         `json:"need_smtp_credentials,omitempty"`
+	Opens               Opens        `json:"opens,omitempty"`
+	OpensSummary        string       `json:"opens_summary,omitempty"`
+	References          []string     `json:"references,omitempty"`
+	SendAttempts        []string     `json:"send_attempts,omitempty"`
+	Sender              string       `json:"sender,omitempty"`
+	Status              string       `json:"status,omitempty"`
+	Subject             string       `json:"subject,omitempty"`
+	TemplateID          string       `json:"template_id,omitempty"`
+	TemplateName        string       `json:"template_name,omitempty"`
+	ThreadID            string       `json:"thread_id,omitempty"`
+	To                  []string     `json:"to,omitempty"`
 
 	//LeadStatusChange
 
-	NewStatusID string `json:"new_status_id"`
-	NewStatus   string `json:"new_status_label"`
-	OldStatusID string `json:"old_status_id"`
-	OldStatus   string `json:"old_status_label"`
+	NewStatusID string `json:"new_status_id,omitempty"`
+	NewStatus   string `json:"new_status_label,omitempty"`
+	OldStatusID string `json:"old_status_id,omitempty"`
+	OldStatus   string `json:"old_status_label,omitempty"`
 
 	//OpportunityStatusChange
 
-	NewStatusType             string     `json:"new_status_type"`
-	OldStatusType             string     `json:"old_status_type"`
-	OpportunityConfidence     int        `json:"opportunity_confidence"`
-	OpportunityDateWon        *time.Time `json:"opportunity_date_won"`
-	OpportunityID             string     `json:"opportunity_id"`
-	OpportunityValue          int        `json:"opportunity_value"`
-	OpportunityValueCurrency  string     `json:"opportunity_value_currency"`
-	OpportunityValueFormatted string     `json:"opportunity_value_formatted"`
-	OpportunityValuePeriod    string     `json:"opportunity_value_period"`
+	NewStatusType             string     `json:"new_status_type,omitempty"`
+	OldStatusType             string     `json:"old_status_type,omitempty"`
+	OpportunityConfidence     int        `json:"opportunity_confidence,omitempty"`
+	OpportunityDateWon        *time.Time `json:"opportunity_date_won,omitempty"`
+	OpportunityID             string     `json:"opportunity_id,omitempty"`
+	OpportunityValue          float64    `json:"opportunity_value,omitempty"`
+	OpportunityValueCurrency  string     `json:"opportunity_value_currency,omitempty"`
+	OpportunityValueFormatted string     `json:"opportunity_value_formatted,omitempty"`
+	OpportunityValuePeriod    string     `json:"opportunity_value_period,omitempty"`
 
 	//Call
-	Direction         string `json:"direction"`
-	CallDuration      int64  `json:"duration"`
-	LocalPhone        string `json:"local_phone"`
-	Note              string `json:"note"`
-	Phone             string `json:"phone"`
-	RecordingUrl      string `json:"recording_url"`
-	RemotePhone       string `json:"remote_phone"`
-	Source            string `json:"source"`
-	TransferredFrom   string `json:"transferred_from"`
-	TransferredTo     string `json:"transferred_to"`
-	VoiceMailDuration int64  `json:"voicemail_duration"`
-	VoiceMailUrl      string `json:"voicemail_url"`
+
+	Direction         string `json:"direction,omitempty"`
+	CallDuration      int64  `json:"duration,omitempty"`
+	LocalPhone        string `json:"local_phone,omitempty"`
+	Note              string `json:"note,omitempty"`
+	Phone             string `json:"phone,omitempty"`
+	RecordingUrl      string `json:"recording_url,omitempty"`
+	RemotePhone       string `json:"remote_phone,omitempty"`
+	Source            string `json:"source,omitempty"`
+	TransferredFrom   string `json:"transferred_from,omitempty"`
+	TransferredTo     string `json:"transferred_to,omitempty"`
+	VoiceMailDuration int64  `json:"voicemail_duration,omitempty"`
+	VoiceMailUrl      string `json:"voicemail_url,omitempty"`
 
 	//TaskCompleted
 
-	TaskAssignedTo     string `json:"task_assigned_to"`
-	TaskAssignedToName string `json:"task_assigned_to_name"`
-	TaskID             string `json:"task_id"`
-	TaskText           string `json:"task_text"`
+	TaskAssignedTo     string `json:"task_assigned_to,omitempty"`
+	TaskAssignedToName string `json:"task_assigned_to_name,omitempty"`
+	TaskID             string `json:"task_id,omitempty"`
+	TaskText           string `json:"task_text,omitempty"`
 
 	//Created
 
-	ImportID string `json:"import_id"`
+	ImportID string `json:"import_id,omitempty"`
 
 	//General
-	CreatedBy      string     `json:"created_by"`
-	CreatedByName  string     `json:"created_by_name"`
-	DateCreated    *time.Time `json:"date_created"`
-	DateUpdated    *time.Time `json:"date_updated"`
-	OrganizationID string     `json:"organization_id"`
-	UpdatedBy      string     `json:"updated_by"`
-	UpdatedByName  string     `json:"updated_by_name"`
-	UserID         string     `json:"user_id"`
-	UserName       string     `json:"user_name"`
-	Users          []string   `json:"users"`
+	CreatedBy      string     `json:"created_by,omitempty"`
+	CreatedByName  string     `json:"created_by_name,omitempty"`
+	DateCreated    *time.Time `json:"date_created,omitempty"`
+	DateUpdated    *time.Time `json:"date_updated,omitempty"`
+	OrganizationID string     `json:"organization_id,omitempty"`
+	UpdatedBy      string     `json:"updated_by,omitempty"`
+	UpdatedByName  string     `json:"updated_by_name,omitempty"`
+	UserID         string     `json:"user_id,omitempty"`
+	UserName       string     `json:"user_name,omitempty"`
+	Users          []string   `json:"users,omitempty"`
 }
 
 type Opens struct {
-	IpAddress string     `json:"ip_address"`
-	OpenedAt  *time.Time `json:"opened_at"`
-	OpenedBy  string     `json:"opened_by"`
-	UserAgent string     `json:"user_agent"`
+	IpAddress string     `json:"ip_address,omitempty"`
+	OpenedAt  *time.Time `json:"opened_at,omitempty"`
+	OpenedBy  string     `json:"opened_by,omitempty"`
+	UserAgent string     `json:"user_agent,omitempty"`
 }
 
 type Enveloppe struct {
-	Bcc         []string   `json:"bcc"`
-	Cc          []string   `json:"cc"`
-	Date        *time.Time `json:"date"`
-	From        []From     `json:"from"`
-	InReplyTo   string     `json:"in_reply_to"`
-	IsAutoReply bool       `json:"is_autoreply"`
-	MessageID   string     `json:"message_id"`
-	ReplyTo     []string   `json:"reply_to"`
-	Sender      []From     `json:"sender"`
-	Subject     string     `json:"subject"`
-	To          []From     `json:"to"`
+	Bcc         []string   `json:"bcc,omitempty"`
+	Cc          []string   `json:"cc,omitempty"`
+	Date        *time.Time `json:"date,omitempty"`
+	From        []From     `json:"from,omitempty"`
+	InReplyTo   string     `json:"in_reply_to,omitempty"`
+	IsAutoReply bool       `json:"is_autoreply,omitempty"`
+	MessageID   string     `json:"message_id,omitempty"`
+	ReplyTo     []string   `json:"reply_to,omitempty"`
+	Sender      []From     `json:"sender,omitempty"`
+	Subject     string     `json:"subject,omitempty"`
+	To          []From     `json:"to,omitempty"`
 }
 
 type From struct {
-	Email string `json:"email"`
-	Name  string `json:"name"`
+	Email string `json:"email,omitempty"`
+	Name  string `json:"name,omitempty"`
 }
 
 type HtmlQuoted struct {
-	Expand bool   `json:"expand"`
-	Html   string `json:"html"`
+	Expand bool   `json:"expand,omitempty"`
+	Html   string `json:"html,omitempty"`
 }
 
 type TextQuoted struct {
-	Expand bool   `json:"expand"`
-	Text   string `json:"text"`
+	Expand bool   `json:"expand,omitempty"`
+	Text   string `json:"text,omitempty"`
 }
 
 type Attachment struct {
-	ContentID   string `json:"content_id"`
-	ContentType string `json:"content_type"`
-	FileName    string `json:"filename"`
-	Size        int    `json:"size"`
-	URL         string `json:"url"`
+	ContentID   string `json:"content_id,omitempty"`
+	ContentType string `json:"content_type,omitempty"`
+	FileName    string `json:"filename,omitempty"`
+	Size        int    `json:"size,omitempty"`
+	URL         string `json:"url,omitempty"`
 }
 
 type Lead struct {
@@ -181,10 +182,14 @@ type Lead struct {
 	Opportunities  []Opportunity     `json:"opportunities,omitempty"`
 	StatusID       string            `json:"status_id,omitempty"`
 	StatusLabel    string            `json:"status_label,omitempty"`
-	Tasks          []Task            `json:"tasks"`
+	Tasks          []Task            `json:"tasks,omitempty"`
 	UpdatedBy      string            `json:"updated_by,omitempty"`
 	UpdatedByName  string            `json:"updated_by_name,omitempty"`
 	URL            string            `json:"url,omitempty"`
+	CreatedBy      string            `json:"created_by,omitempty"`
+	CreatedName    string            `json:"created_by_name,omitempty"`
+
+	Activities []Activity `json:"activities,omitempty`
 }
 
 type Task struct {
@@ -193,14 +198,15 @@ type Task struct {
 	AssignedToName string     `json:"assigned_to_name,omitempty"`
 	ContactID      string     `json:"contact_id,omitempty"`
 	ContactName    string     `json:"contact_name,omitempty"`
-	CreatedBy      string     `json:"created_by"`
-	CreatedName    string     `json:"created_by_name"`
-	DateCreated    *time.Time `json:"date_created"`
-	DateUpdated    *time.Time `json:"date_updated"`
-	DueDate        *time.Time `json:"date_updated,omitempty"`
+	CreatedBy      string     `json:"created_by,omitempty"`
+	CreatedName    string     `json:"created_by_name,omitempty"`
+	Date           string     `json:"date,omitempty"`
+	DateCreated    *time.Time `json:"date_created,omitempty"`
+	DateUpdated    *time.Time `json:"date_updated,omitempty"`
+	DueDate        string     `json:"due_date,omitempty"`
 	ID             string     `json:"id,omitempty"`
-	IsComplete     bool       `json:"is_complete"`
-	IsDateLess     bool       `json:"is_dateless"`
+	IsComplete     bool       `json:"is_complete,omitempty"`
+	IsDateLess     bool       `json:"is_dateless,omitempty"`
 	LeadID         string     `json:"lead_id,omitempty"`
 	LeadName       string     `json:"lead_name,omitempty"`
 	ObjectID       string     `json:"object_id,omitempty"`
@@ -213,19 +219,19 @@ type Task struct {
 }
 
 type Opportunity struct {
-	Confidence     int        `json:"confidence"`
-	ContactID      string     `json:"contact_id"`
-	ContactName    string     `json:"contact_name"`
+	Confidence     int        `json:"confidence,omitempty"`
+	ContactID      string     `json:"contact_id,omitempty"`
+	ContactName    string     `json:"contact_name,omitempty"`
 	CreationDate   *time.Time `json:"date_created,omitempty"`
-	CreatedBy      string     `json:"created_by"`
-	CreatedName    string     `json:"created_by_name"`
-	DateCreated    *time.Time `json:"date_created"`
-	DateLost       *time.Time `json:"date_lost"`
-	DateUpdated    *time.Time `json:"date_updated"`
-	DateWon        *time.Time `json:"date_won"`
-	ID             string     `json:"id"`
-	LeadID         string     `json:"lead_id"`
-	LeadName       string     `json:"lead_name"`
+	CreatedBy      string     `json:"created_by,omitempty"`
+	CreatedName    string     `json:"created_by_name,omitempty"`
+	DateCreated    *time.Time `json:"date_created,omitempty"`
+	DateLost       *time.Time `json:"date_lost,omitempty"`
+	DateUpdated    *time.Time `json:"date_updated,omitempty"`
+	DateWon        string     `json:"date_won,omitempty"` //not classic format
+	ID             string     `json:"id,omitempty"`
+	LeadID         string     `json:"lead_id,omitempty"`
+	LeadName       string     `json:"lead_name,omitempty"`
 	Note           string     `json:"note,omitempty"`
 	OrganizationID string     `json:"organization_id,omitempty"`
 	StatusID       string     `json:"status_id,omitempty"`
@@ -233,10 +239,10 @@ type Opportunity struct {
 	StatusType     string     `json:"status_type,omitempty"`
 	UpdatedBy      string     `json:"updated_by,omitempty"`
 	UpdatedByName  string     `json:"updated_by_name,omitempty"`
-	UserID         string     `json:"user_id"`
-	UserName       string     `json:"user_name"`
-	Value          float64    `json:"value"`
-	ValueCurrency  string     `json:"value_currency"`
-	ValueFormatted string     `json:"value_formatted"`
-	ValuePeriod    string     `json:"value_period"`
+	UserID         string     `json:"user_id,omitempty"`
+	UserName       string     `json:"user_name,omitempty"`
+	Value          float64    `json:"value,omitempty"`
+	ValueCurrency  string     `json:"value_currency,omitempty"`
+	ValueFormatted string     `json:"value_formatted,omitempty"`
+	ValuePeriod    string     `json:"value_period,omitempty"`
 }
