@@ -144,7 +144,6 @@ func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -222,6 +221,38 @@ func (c HttpCloseIoClient) SendTask(task *Task) error {
 		return err
 	}
 	return nil
+}
+
+func (c HttpCloseIoClient) GetLeadStatuses() ([]Status, error) {
+	responseBody, err := c.getResponse("GET", "status/lead", nil, nil)
+	if err != nil {
+		return make([]Status, 0), err
+	}
+	dataStatuses := struct {
+		Statuses []Status `json:"data"`
+	}{}
+	err = json.Unmarshal(responseBody, &dataStatuses)
+	if err != nil {
+		return make([]Status, 0), err
+	}
+	return dataStatuses.Statuses, nil
+
+}
+
+func (c HttpCloseIoClient) GetOpportunityStatuses() ([]Status, error) {
+	responseBody, err := c.getResponse("GET", "status/opportunity", nil, nil)
+	if err != nil {
+		return make([]Status, 0), err
+	}
+	dataStatuses := struct {
+		Statuses []Status `json:"data"`
+	}{}
+	err = json.Unmarshal(responseBody, &dataStatuses)
+	if err != nil {
+		return make([]Status, 0), err
+	}
+	return dataStatuses.Statuses, nil
+
 }
 
 func (c HttpCloseIoClient) SendOpportunity(opportunity *Opportunity) error {
