@@ -40,10 +40,10 @@ type Activity struct {
 	Attachments         []Attachment `json:"attachments,omitempty"`
 	Bcc                 []string     `json:"bcc,omitempty"`
 	BodyHtml            string       `json:"body_html,omitempty"`
-	BodyHtmlQuoted      HtmlQuoted   `json:"body_html_quoted,omitempty"`
+	BodyHtmlQuoted      []HtmlQuoted `json:"body_html_quoted,omitempty"`
 	BodyPreview         string       `json:"body_preview,omitempty"`
 	BodyText            string       `json:"body_text,omitempty"`
-	BodyTextQuoted      TextQuoted   `json:"body_text_quoted,omitempty"`
+	BodyTextQuoted      []TextQuoted `json:"body_text_quoted,omitempty"`
 	Cc                  []string     `json:"cc,omitempty"`
 	ContactID           string       `json:"contact_id,omitempty"`
 	DateScheduled       *time.Time   `json:"date_scheduled,omitempty"`
@@ -54,7 +54,7 @@ type Activity struct {
 	LeadID              string       `json:"lead_id,omitempty"`
 	MessageIDs          []string     `json:"message_ids,omitempty"`
 	NeedSmtpCredentials bool         `json:"need_smtp_credentials,omitempty"`
-	Opens               Opens        `json:"opens,omitempty"`
+	Opens               []Opens      `json:"opens,omitempty"`
 	OpensSummary        string       `json:"opens_summary,omitempty"`
 	References          []string     `json:"references,omitempty"`
 	SendAttempts        []string     `json:"send_attempts,omitempty"`
@@ -203,7 +203,6 @@ type Task struct {
 	Date           string     `json:"date,omitempty"`
 	DateCreated    *time.Time `json:"date_created,omitempty"`
 	DateUpdated    *time.Time `json:"date_updated,omitempty"`
-	DueDate        string     `json:"due_date,omitempty"`
 	ID             string     `json:"id,omitempty"`
 	IsComplete     bool       `json:"is_complete,omitempty"`
 	IsDateLess     bool       `json:"is_dateless,omitempty"`
@@ -245,4 +244,10 @@ type Opportunity struct {
 	ValueCurrency  string     `json:"value_currency,omitempty"`
 	ValueFormatted string     `json:"value_formatted,omitempty"`
 	ValuePeriod    string     `json:"value_period,omitempty"`
+}
+
+type Status struct {
+	ID    string `json:"id,omitempty"`
+	Label string `json:"label,omitempty"`
+	Type  string `json:"type,omitempty"`
 }
