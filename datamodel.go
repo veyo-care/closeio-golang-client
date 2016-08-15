@@ -116,6 +116,7 @@ type Activity struct {
 	CreatedByName  string     `json:"created_by_name,omitempty"`
 	DateCreated    *time.Time `json:"date_created,omitempty"`
 	DateUpdated    *time.Time `json:"date_updated,omitempty"`
+	FollowUpDate   *time.Time `json:"followup_date,omitempty"`
 	OrganizationID string     `json:"organization_id,omitempty"`
 	UpdatedBy      string     `json:"updated_by,omitempty"`
 	UpdatedByName  string     `json:"updated_by_name,omitempty"`
