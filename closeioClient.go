@@ -11,12 +11,12 @@ import (
 )
 
 type CloseIoClient interface {
-	SendLead(lead *Lead) error
 	GetLead(leadID string) (*Lead, error)
 	SendActivity(activity *Activity) error
+	SendLead(lead *Lead) (*Lead, error)
 	GetActivities(leadId string) ([]Activity, error)
 	GetAllLeads() ([]Lead, error)
-	GetLeads(channel, leadType string) ([]Lead, error)
+	GetLeads(queryFields map[string]string) ([]Lead, error)
 	DeleteLead(leadID string) error
 	GetOpportunities() ([]Opportunity, error)
 }
@@ -95,7 +95,6 @@ func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, erro
 
 		body, err := c.getResponse("GET", "lead", query, nil)
 
-		fmt.Println(string(body))
 		fetched, err := ParseLeads(body)
 		if err != nil {
 			return nil, err
