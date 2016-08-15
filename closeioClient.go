@@ -120,9 +120,9 @@ func convertQueryFields(queryFields map[string]string) string {
 	var query = ""
 	for key, value := range queryFields {
 		if query == "" {
-			query = fmt.Sprintf(`%s:"%s`, key, value)
+			query = fmt.Sprintf(`%s:"%s"`, key, value)
 		} else {
-			query = fmt.Sprintf(`%s AND %s:"%s`, query, key, value)
+			query = fmt.Sprintf(`%s AND %s:"%s"`, query, key, value)
 		}
 	}
 
