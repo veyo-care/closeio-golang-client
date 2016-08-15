@@ -19,6 +19,11 @@ type CloseIoClient interface {
 	GetLeads(queryFields map[string]string) ([]Lead, error)
 	DeleteLead(leadID string) error
 	GetOpportunities() ([]Opportunity, error)
+
+	CreateContact(contact *Contact) (*Contact, error)
+	UpdateContact(contact *Contact) (*Contact, error)
+	GetContact(contactID string) (*Contact, error)
+	DeleteContact(contactID string) error
 }
 
 const limit = 100
@@ -110,6 +115,58 @@ func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, erro
 	}
 
 	return leads, nil
+}
+
+func (c HttpCloseIoClient) CreateContact(contact *Contact) (*Contact, error) {
+	return c.contactAction("POST", contact)
+}
+
+func (c HttpCloseIoClient) UpdateContact(contact *Contact) (*Contact, error) {
+	return c.contactAction("PUT", contact)
+}
+
+func (c HttpCloseIoClient) GetContact(contactID string) (*Contact, error) {
+
+	responseBody, err := c.getResponse("GET", fmt.Sprintf("contact/%s", contactID), nil, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var responseContact Contact
+	err = json.Unmarshal(responseBody, &responseContact)
+	if err != nil {
+		return nil, err
+	}
+	return &responseContact, nil
+}
+
+func (c HttpCloseIoClient) DeleteContact(contactID string) error {
+
+	_, err := c.getResponse("DELETE", fmt.Sprintf("contact/%s", contactID), nil, nil)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c HttpCloseIoClient) contactAction(method string, contact *Contact) (*Contact, error) {
+	content, _ := json.Marshal(contact)
+	body := bytes.NewBuffer(content)
+
+	responseBody, err := c.getResponse(method, "contact", nil, body)
+
+	if err != nil {
+		return nil, err
+	}
+	var responseContact Contact
+	err = json.Unmarshal(responseBody, &responseContact)
+	if err != nil {
+		return nil, err
+	}
+	return &responseContact, nil
 }
 
 func convertQueryFields(queryFields map[string]string) string {
