@@ -118,11 +118,37 @@ func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, erro
 }
 
 func (c HttpCloseIoClient) CreateContact(contact *Contact) (*Contact, error) {
-	return c.contactAction("POST", contact)
+	content, _ := json.Marshal(contact)
+	body := bytes.NewBuffer(content)
+
+	responseBody, err := c.getResponse("POST", "contact", nil, body)
+
+	if err != nil {
+		return nil, err
+	}
+	var responseContact Contact
+	err = json.Unmarshal(responseBody, &responseContact)
+	if err != nil {
+		return nil, err
+	}
+	return &responseContact, nil
 }
 
 func (c HttpCloseIoClient) UpdateContact(contact *Contact) (*Contact, error) {
-	return c.contactAction("PUT", contact)
+	content, _ := json.Marshal(contact)
+	body := bytes.NewBuffer(content)
+
+	responseBody, err := c.getResponse("PUT", fmt.Sprintf("contact/%s", contact.ID), nil, body)
+
+	if err != nil {
+		return nil, err
+	}
+	var responseContact Contact
+	err = json.Unmarshal(responseBody, &responseContact)
+	if err != nil {
+		return nil, err
+	}
+	return &responseContact, nil
 }
 
 func (c HttpCloseIoClient) GetContact(contactID string) (*Contact, error) {
@@ -150,23 +176,6 @@ func (c HttpCloseIoClient) DeleteContact(contactID string) error {
 	}
 
 	return nil
-}
-
-func (c HttpCloseIoClient) contactAction(method string, contact *Contact) (*Contact, error) {
-	content, _ := json.Marshal(contact)
-	body := bytes.NewBuffer(content)
-
-	responseBody, err := c.getResponse(method, "contact", nil, body)
-
-	if err != nil {
-		return nil, err
-	}
-	var responseContact Contact
-	err = json.Unmarshal(responseBody, &responseContact)
-	if err != nil {
-		return nil, err
-	}
-	return &responseContact, nil
 }
 
 func convertQueryFields(queryFields map[string]string) string {
