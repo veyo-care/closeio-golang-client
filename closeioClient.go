@@ -89,31 +89,24 @@ func (c HttpCloseIoClient) GetAllLeads() ([]Lead, error) {
 
 func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, error) {
 
-	skip := 0
+	elements, err := c.getElements("lead", queryFields)
 
-	leads := []Lead{}
-	finish := false
-	//Stop when a get a bad request
-	for !finish {
+	if err != nil {
+		return nil, err
+	}
 
-		query := map[string]string{"_skip": strconv.Itoa(skip), "_limit": strconv.Itoa(limit)}
-		if queryString := convertQueryFields(queryFields); queryString != "" {
-			query["query"] = queryString
-		}
+	leads := make([]Lead, len(elements), len(elements))
 
-		body, err := c.getResponse("GET", "lead", query, nil)
+	for i, element := range elements {
+		var lead Lead
 
-		fetched, err := ParseLeads(body)
+		err = json.Unmarshal([]byte(element), &lead)
+
 		if err != nil {
 			return nil, err
 		}
 
-		if len(fetched) < limit {
-			finish = true
-		}
-
-		leads = append(leads, fetched...)
-		skip = skip + limit
+		leads[i] = lead
 
 	}
 
@@ -262,39 +255,69 @@ func ParseLeads(content []byte) ([]Lead, error) {
 
 func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 
-	skip := 0
+	elements, err := c.getElements("opportunity", nil)
 
-	opportunities := []Opportunity{}
-	finish := false
-	//Stop when a get a bad request
-	for !finish {
+	if err != nil {
+		return nil, err
+	}
 
-		query := map[string]string{"_skip": strconv.Itoa(skip), "_limit": strconv.Itoa(limit)}
-		body, err := c.getResponse("GET", "opportunity", query, nil)
+	opportunities := make([]Opportunity, len(elements), len(elements))
+
+	for i, element := range elements {
+		var opportunity Opportunity
+
+		err = json.Unmarshal([]byte(element), &opportunity)
 
 		if err != nil {
 			return nil, err
 		}
 
-		opportunityResponse := struct {
-			Opportunities []Opportunity `json:"data"`
-		}{}
-
-		err = json.Unmarshal(body, &opportunityResponse)
-		if err != nil {
-			return nil, fmt.Errorf("Error while deserializing json %s", err.Error())
-		}
-
-		if len(opportunityResponse.Opportunities) < limit {
-			finish = true
-		}
-		opportunities = append(opportunities, opportunityResponse.Opportunities...)
-		skip = skip + limit
+		opportunities[i] = opportunity
 
 	}
 
 	return opportunities, nil
+}
 
+func (c HttpCloseIoClient) getElements(route string, queryFields map[string]string) ([]json.RawMessage, error) {
+
+	skip := 0
+
+	blobs := []json.RawMessage{}
+
+	finish := false
+	//Stop when a get a bad request
+	for !finish {
+
+		query := map[string]string{"_skip": strconv.Itoa(skip), "_limit": strconv.Itoa(limit)}
+
+		if queryString := convertQueryFields(queryFields); queryString != "" {
+			query["query"] = queryString
+		}
+
+		body, err := c.getResponse("GET", route, query, nil)
+
+		if err != nil {
+			return nil, err
+		}
+
+		response := struct {
+			Blobs   []json.RawMessage `json:"data"`
+			HasMore bool              `json:"has_more"`
+		}{}
+
+		err = json.Unmarshal(body, &response)
+		if err != nil {
+			return nil, fmt.Errorf("Error while deserializing json %s", err.Error())
+		}
+
+		finish = !response.HasMore
+		blobs = append(blobs, response.Blobs...)
+		skip = skip + limit
+
+	}
+
+	return blobs, nil
 }
 
 func (c HttpCloseIoClient) SendTask(task *Task) error {
