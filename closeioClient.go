@@ -15,6 +15,7 @@ type CloseIoClient interface {
 	SendActivity(activity *Activity) error
 	SendLead(lead *Lead) (*Lead, error)
 	SendTask(task *Task) error
+	GetAllActivities() ([]Activity, error)
 	GetActivities(leadId string) ([]Activity, error)
 	GetAllLeads() ([]Lead, error)
 	GetLeads(queryFields map[string]string) ([]Lead, error)
@@ -191,16 +192,40 @@ func convertQueryFields(queryFields map[string]string) string {
 	return query
 }
 
+func (c HttpCloseIoClient) GetAllActivities(leadId string) ([]Activity, error) {
+	return c.getActivities(nil)
+}
+
 func (c HttpCloseIoClient) GetActivities(leadId string) ([]Activity, error) {
 
 	query := map[string]string{"lead_id": leadId}
-	body, err := c.getResponse("GET", "activity", query, nil)
+	return c.getActivities(query)
+}
+
+func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activity, error) {
+
+	elements, err := c.getElements("activity", queryFields)
 
 	if err != nil {
 		return nil, err
 	}
 
-	return ParseActivities(body)
+	activities := make([]Activity, len(elements), len(elements))
+
+	for i, element := range elements {
+		var activitiy Activity
+
+		err = json.Unmarshal([]byte(element), &activitiy)
+
+		if err != nil {
+			return nil, err
+		}
+
+		activities[i] = activitiy
+
+	}
+
+	return activities, nil
 }
 
 func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
@@ -224,33 +249,6 @@ func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
 		return err
 	}
 	return nil
-}
-
-func ParseActivities(content []byte) ([]Activity, error) {
-
-	dataActivities := struct {
-		Activities []Activity `json:"data"`
-	}{}
-
-	err := json.Unmarshal(content, &dataActivities)
-	if err != nil {
-		return nil, fmt.Errorf("Error while deserializing json %s", err.Error())
-	}
-
-	return dataActivities.Activities, nil
-}
-
-func ParseLeads(content []byte) ([]Lead, error) {
-	dataLeads := struct {
-		Leads []Lead `json:"data"`
-	}{}
-
-	err := json.Unmarshal(content, &dataLeads)
-	if err != nil {
-		return nil, fmt.Errorf("Error while deserializing json %s \n %s \n", err.Error(), string(content))
-	}
-
-	return dataLeads.Leads, nil
 }
 
 func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
