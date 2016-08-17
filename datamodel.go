@@ -51,7 +51,6 @@ type Activity struct {
 	EmailAccountID      string       `json:"email_account_id,omitempty"`
 	Enveloppe           Enveloppe    `json:"enveloppe,omitempty"`
 	InReplyToID         string       `json:"in_reply_to_id,omitempty"`
-	LeadID              string       `json:"lead_id,omitempty"`
 	MessageIDs          []string     `json:"message_ids,omitempty"`
 	NeedSmtpCredentials bool         `json:"need_smtp_credentials,omitempty"`
 	Opens               []Opens      `json:"opens,omitempty"`
@@ -112,6 +111,7 @@ type Activity struct {
 	ImportID string `json:"import_id,omitempty"`
 
 	//General
+	LeadID         string     `json:"lead_id,omitempty"`
 	CreatedBy      string     `json:"created_by,omitempty"`
 	CreatedByName  string     `json:"created_by_name,omitempty"`
 	DateCreated    *time.Time `json:"date_created,omitempty"`
@@ -124,6 +124,8 @@ type Activity struct {
 	UserName       string     `json:"user_name,omitempty"`
 	Users          []string   `json:"users,omitempty"`
 }
+
+//structs for emails
 
 type Opens struct {
 	IpAddress string     `json:"ip_address,omitempty"`
@@ -251,4 +253,15 @@ type Status struct {
 	ID    string `json:"id,omitempty"`
 	Label string `json:"label,omitempty"`
 	Type  string `json:"type,omitempty"`
+}
+
+type User struct {
+	ID            string    `json:"id,omitempty"`
+	Email         string    `json:"email,omitempty"`
+	FirstName     string    `json:"first_name,omitempty"`
+	LastName      string    `json:"last_name,omitempty"`
+	Image         string    `json:"image,omitempty"`
+	Organizations []string  `json:"organizations,omitempty"`
+	DateCreated   time.Time `json:"date_created,omitempty"`
+	DateUpdated   time.Time `json:"date_updated,omitempty"`
 }
