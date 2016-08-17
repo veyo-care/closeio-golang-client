@@ -307,6 +307,15 @@ func (c HttpCloseIoClient) SendTask(task *Task) error {
 	return nil
 }
 
+func (c HttpCloseIoClient) DeleteTask(taskID string) error {
+	_, err := c.getResponse("DELETE", fmt.Sprintf("/task/%s", taskID), nil, nil)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c HttpCloseIoClient) GetLeadStatuses() ([]Status, error) {
 	responseBody, err := c.getResponse("GET", "status/lead", nil, nil)
 	if err != nil {
