@@ -25,6 +25,7 @@ type CloseIoClient interface {
 	UpdateContact(contact *Contact) (*Contact, error)
 	GetContact(contactID string) (*Contact, error)
 	DeleteContact(contactID string) error
+	DeleteTask(taskID string) error
 }
 
 const limit = 100
