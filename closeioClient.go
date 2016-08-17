@@ -26,6 +26,7 @@ type CloseIoClient interface {
 	GetContact(contactID string) (*Contact, error)
 	DeleteContact(contactID string) error
 	DeleteTask(taskID string) error
+	GetAllUsers() ([]User, error)
 }
 
 const limit = 100
@@ -359,6 +360,21 @@ func (c HttpCloseIoClient) SendOpportunity(opportunity *Opportunity) error {
 		return err
 	}
 	return nil
+}
+
+func (c HttpCloseIoClient) GetAllUsers() ([]User, error) {
+	responseBody, err := c.getResponse("GET", "user", nil, nil)
+	if err != nil {
+		return make([]User, 0), err
+	}
+	dataUsers := struct {
+		Users []User `json:"data"`
+	}{}
+	err = json.Unmarshal(responseBody, &dataUsers)
+	if err != nil {
+		return make([]User, 0), err
+	}
+	return dataUsers.Users, nil
 }
 
 func (c HttpCloseIoClient) getResponse(method, route string, query map[string]string, body io.Reader) ([]byte, error) {
