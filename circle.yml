@@ -9,13 +9,10 @@ machine:
     - ln -s $GOPATH_REPO $HOME_REPO
 
 dependencies:
-  pre:
-    - go get github.com/Masterminds/glide
-    - cd $GOPATH_REPO && glide up
   override:
     - go build
 test:
   override:
-    - go test $(glide novendor)
+    - go test
 
       
