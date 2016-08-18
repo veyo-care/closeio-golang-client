@@ -11,23 +11,27 @@ import (
 )
 
 type CloseIoClient interface {
-	GetLead(leadID string) (*Lead, error)
-	SendActivity(activity *Activity) error
 	SendLead(lead *Lead) (*Lead, error)
-	SendTask(task *Task) error
-	SendOpportunity(opportunity *Opportunity) error
+	GetLead(leadID string) (*Lead, error)
+	GetLeads(queryFields map[string]string) ([]Lead, error)
+	GetAllLeads() ([]Lead, error)
+	DeleteLead(leadID string) error
+
+	SendActivity(activity *Activity) error
 	GetAllActivities() ([]Activity, error)
 	GetActivities(leadId string) ([]Activity, error)
-	GetAllLeads() ([]Lead, error)
-	GetLeads(queryFields map[string]string) ([]Lead, error)
-	DeleteLead(leadID string) error
+
+	SendOpportunity(opportunity *Opportunity) error
 	GetOpportunities() ([]Opportunity, error)
+
+	SendTask(task *Task) error
+	DeleteTask(taskID string) error
 
 	CreateContact(contact *Contact) (*Contact, error)
 	UpdateContact(contact *Contact) (*Contact, error)
 	GetContact(contactID string) (*Contact, error)
 	DeleteContact(contactID string) error
-	DeleteTask(taskID string) error
+
 	GetAllUsers() ([]User, error)
 }
 
