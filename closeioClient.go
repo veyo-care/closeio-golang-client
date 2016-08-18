@@ -192,7 +192,7 @@ func convertQueryFields(queryFields map[string]string) string {
 	return query
 }
 
-func (c HttpCloseIoClient) GetAllActivities(leadId string) ([]Activity, error) {
+func (c HttpCloseIoClient) GetAllActivities() ([]Activity, error) {
 	return c.getActivities(nil)
 }
 
