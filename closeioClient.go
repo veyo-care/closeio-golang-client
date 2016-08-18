@@ -15,6 +15,7 @@ type CloseIoClient interface {
 	SendActivity(activity *Activity) error
 	SendLead(lead *Lead) (*Lead, error)
 	SendTask(task *Task) error
+	SendOpportunity(opportunity *Opportunity) error
 	GetAllActivities() ([]Activity, error)
 	GetActivities(leadId string) ([]Activity, error)
 	GetAllLeads() ([]Lead, error)
