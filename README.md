@@ -1,7 +1,7 @@
 # closeio-golang-client
 
 
-![circlepassing](https://circleci.com/gh/veyo-care/mongofinil.svg?&style=shield&circle-token=b14acf911433d315298235b0c2fbf7b2670a92a8)
+![circlepassing](https://circleci.com/gh/veyo-care/closeio-golang-client.png?&style=shield&circle-token=0a57a96e8a6cfa8c16438f368b2757730ef1db4a)
 
 ## Description
 
