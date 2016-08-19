@@ -95,7 +95,13 @@ func (c HttpCloseIoClient) GetAllLeads() ([]Lead, error) {
 
 func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, error) {
 
-	elements, err := c.getElements("lead", queryFields)
+	query := make(map[string]string)
+
+	if queryString := convertQueryFields(queryFields); queryString != "" {
+		query["query"] = queryString
+	}
+
+	elements, err := c.getElements("lead", query)
 
 	if err != nil {
 		return nil, err
@@ -209,6 +215,10 @@ func (c HttpCloseIoClient) GetActivities(leadId string) ([]Activity, error) {
 
 func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activity, error) {
 
+	if queryFields == nil {
+		queryFields = make(map[string]string)
+	}
+
 	elements, err := c.getElements("activity", queryFields)
 
 	if err != nil {
@@ -282,7 +292,7 @@ func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 	return opportunities, nil
 }
 
-func (c HttpCloseIoClient) getElements(route string, queryFields map[string]string) ([]json.RawMessage, error) {
+func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([]json.RawMessage, error) {
 
 	skip := 0
 
@@ -292,11 +302,8 @@ func (c HttpCloseIoClient) getElements(route string, queryFields map[string]stri
 	//Stop when a get a bad request
 	for !finish {
 
-		query := map[string]string{"_skip": strconv.Itoa(skip), "_limit": strconv.Itoa(limit)}
-
-		if queryString := convertQueryFields(queryFields); queryString != "" {
-			query["query"] = queryString
-		}
+		query["_skip"] = strconv.Itoa(skip)
+		query["_limit"] = strconv.Itoa(limit)
 
 		body, err := c.getResponse("GET", route, query, nil)
 
