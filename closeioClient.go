@@ -215,10 +215,6 @@ func (c HttpCloseIoClient) GetActivities(leadId string) ([]Activity, error) {
 
 func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activity, error) {
 
-	if queryFields == nil {
-		queryFields = make(map[string]string)
-	}
-
 	elements, err := c.getElements("activity", queryFields)
 
 	if err != nil {
@@ -293,6 +289,10 @@ func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 }
 
 func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([]json.RawMessage, error) {
+
+	if query == nil {
+		query = make(map[string]string)
+	}
 
 	skip := 0
 
