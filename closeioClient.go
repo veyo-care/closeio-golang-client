@@ -405,7 +405,6 @@ func (c HttpCloseIoClient) GetAllUsers() ([]User, error) {
 
 func (c HttpCloseIoClient) getResponse(method, route string, query map[string]string, body io.Reader) ([]byte, error) {
 	req, err := http.NewRequest(method, fmt.Sprintf("https://app.close.io/api/v1/%s/", route), body)
-	defer req.Body.Close()
 
 	if err != nil {
 		return nil, fmt.Errorf("Error while creating http request %s", err.Error())
