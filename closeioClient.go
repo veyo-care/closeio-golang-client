@@ -231,7 +231,7 @@ func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activ
 		err = json.Unmarshal([]byte(element), &activitiy)
 
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("Could not deserialize %s %s", string(element), err.Error())
 		}
 
 		activities[i] = activitiy
