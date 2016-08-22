@@ -51,7 +51,7 @@ func NewCloseIoClient(apiKey string) *HttpCloseIoClient {
 }
 
 func (c HttpCloseIoClient) SendLead(lead *Lead) (*Lead, error) {
-	return c.actionOnLead("GET", "lead", lead)
+	return c.actionOnLead("POST", "lead", lead)
 }
 
 func (c HttpCloseIoClient) GetLead(leadID string) (*Lead, error) {
