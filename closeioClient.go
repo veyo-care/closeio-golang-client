@@ -16,6 +16,7 @@ type CloseIoClient interface {
 	GetLeads(queryFields map[string]string) ([]Lead, error)
 	GetAllLeads() ([]Lead, error)
 	DeleteLead(leadID string) error
+	UpdateLead(lead *Lead) (*Lead, error)
 
 	SendActivity(activity *Activity) error
 	GetAllActivities() ([]Activity, error)
@@ -48,20 +49,7 @@ func NewCloseIoClient(apiKey string) *HttpCloseIoClient {
 }
 
 func (c HttpCloseIoClient) SendLead(lead *Lead) (*Lead, error) {
-	content, _ := json.Marshal(lead)
-	body := bytes.NewBuffer(content)
-
-	responseBody, err := c.getResponse("POST", "lead", nil, body)
-
-	if err != nil {
-		return nil, err
-	}
-	var responseLead Lead
-	err = json.Unmarshal(responseBody, &responseLead)
-	if err != nil {
-		return nil, err
-	}
-	return &responseLead, nil
+	return c.actionOnLead("GET", "lead", lead)
 }
 
 func (c HttpCloseIoClient) GetLead(leadID string) (*Lead, error) {
@@ -89,6 +77,27 @@ func (c HttpCloseIoClient) DeleteLead(leadID string) error {
 	}
 
 	return nil
+}
+
+func (c HttpCloseIoClient) UpdateLead(lead *Lead) (*Lead, error) {
+	return c.actionOnLead("PUT", fmt.Sprintf("lead/%s", lead.ID), lead)
+}
+
+func (c HttpCloseIoClient) actionOnLead(method string, route string, lead *Lead) (*Lead, error) {
+	content, _ := json.Marshal(lead)
+	body := bytes.NewBuffer(content)
+
+	responseBody, err := c.getResponse(method, route, nil, body)
+
+	if err != nil {
+		return nil, err
+	}
+	var responseLead Lead
+	err = json.Unmarshal(responseBody, &responseLead)
+	if err != nil {
+		return nil, err
+	}
+	return &responseLead, nil
 }
 
 func (c HttpCloseIoClient) GetAllLeads() ([]Lead, error) {
