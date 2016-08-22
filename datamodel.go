@@ -37,33 +37,33 @@ type Activity struct {
 
 	//Email
 
-	Attachments         []Attachment `json:"attachments,omitempty"`
-	Bcc                 []string     `json:"bcc,omitempty"`
-	BodyHtml            string       `json:"body_html,omitempty"`
-	BodyHtmlQuoted      []HtmlQuoted `json:"body_html_quoted,omitempty"`
-	BodyPreview         string       `json:"body_preview,omitempty"`
-	BodyText            string       `json:"body_text,omitempty"`
-	BodyTextQuoted      []TextQuoted `json:"body_text_quoted,omitempty"`
-	Cc                  []string     `json:"cc,omitempty"`
-	ContactID           string       `json:"contact_id,omitempty"`
-	DateScheduled       *time.Time   `json:"date_scheduled,omitempty"`
-	DateSent            *time.Time   `json:"date_sent,omitempty"`
-	EmailAccountID      string       `json:"email_account_id,omitempty"`
-	Enveloppe           Enveloppe    `json:"enveloppe,omitempty"`
-	InReplyToID         string       `json:"in_reply_to_id,omitempty"`
-	MessageIDs          []string     `json:"message_ids,omitempty"`
-	NeedSmtpCredentials bool         `json:"need_smtp_credentials,omitempty"`
-	Opens               []Opens      `json:"opens,omitempty"`
-	OpensSummary        string       `json:"opens_summary,omitempty"`
-	References          []string     `json:"references,omitempty"`
-	SendAttempts        []string     `json:"send_attempts,omitempty"`
-	Sender              string       `json:"sender,omitempty"`
-	Status              string       `json:"status,omitempty"`
-	Subject             string       `json:"subject,omitempty"`
-	TemplateID          string       `json:"template_id,omitempty"`
-	TemplateName        string       `json:"template_name,omitempty"`
-	ThreadID            string       `json:"thread_id,omitempty"`
-	To                  []string     `json:"to,omitempty"`
+	Attachments         []Attachment  `json:"attachments,omitempty"`
+	Bcc                 []string      `json:"bcc,omitempty"`
+	BodyHtml            string        `json:"body_html,omitempty"`
+	BodyHtmlQuoted      []HtmlQuoted  `json:"body_html_quoted,omitempty"`
+	BodyPreview         string        `json:"body_preview,omitempty"`
+	BodyText            string        `json:"body_text,omitempty"`
+	BodyTextQuoted      []TextQuoted  `json:"body_text_quoted,omitempty"`
+	Cc                  []string      `json:"cc,omitempty"`
+	ContactID           string        `json:"contact_id,omitempty"`
+	DateScheduled       *time.Time    `json:"date_scheduled,omitempty"`
+	DateSent            *time.Time    `json:"date_sent,omitempty"`
+	EmailAccountID      string        `json:"email_account_id,omitempty"`
+	Enveloppe           Enveloppe     `json:"enveloppe,omitempty"`
+	InReplyToID         string        `json:"in_reply_to_id,omitempty"`
+	MessageIDs          []string      `json:"message_ids,omitempty"`
+	NeedSmtpCredentials bool          `json:"need_smtp_credentials,omitempty"`
+	Opens               []Opens       `json:"opens,omitempty"`
+	OpensSummary        string        `json:"opens_summary,omitempty"`
+	References          []string      `json:"references,omitempty"`
+	SendAttempts        []SendAttempt `json:"send_attempts,omitempty"`
+	Sender              string        `json:"sender,omitempty"`
+	Status              string        `json:"status,omitempty"`
+	Subject             string        `json:"subject,omitempty"`
+	TemplateID          string        `json:"template_id,omitempty"`
+	TemplateName        string        `json:"template_name,omitempty"`
+	ThreadID            string        `json:"thread_id,omitempty"`
+	To                  []string      `json:"to,omitempty"`
 
 	//LeadStatusChange
 
@@ -132,6 +132,12 @@ type Opens struct {
 	OpenedAt  *time.Time `json:"opened_at,omitempty"`
 	OpenedBy  string     `json:"opened_by,omitempty"`
 	UserAgent string     `json:"user_agent,omitempty"`
+}
+
+type SendAttempt struct {
+	Date         *time.Time `json:"date,omitempty"`
+	ErrorMessage string     `json:"error_message,omitempty"`
+	ErrorClass   string     `json:"error_class,omitempty"`
 }
 
 type Enveloppe struct {
