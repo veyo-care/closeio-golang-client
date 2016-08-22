@@ -32,6 +32,8 @@ type CloseIoClient interface {
 	GetContact(contactID string) (*Contact, error)
 	DeleteContact(contactID string) error
 
+	UpdateAddress(address Address, leadID string) error
+
 	GetAllUsers() ([]User, error)
 }
 
@@ -408,6 +410,16 @@ func (c HttpCloseIoClient) GetAllUsers() ([]User, error) {
 		return make([]User, 0), err
 	}
 	return dataUsers.Users, nil
+}
+
+func (c HttpCloseIoClient) UpdateAddress(address Address, leadID string) error {
+	lead := Lead{
+		Addresses: []Address{address},
+	}
+	content, _ := json.Marshal(lead)
+	body := bytes.NewBuffer(content)
+	_, err := c.getResponse("PUT", fmt.Sprintf("lead/%s", leadID), nil, body)
+	return err
 }
 
 func (c HttpCloseIoClient) getResponse(method, route string, query map[string]string, body io.Reader) ([]byte, error) {
