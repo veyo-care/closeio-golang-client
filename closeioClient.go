@@ -220,7 +220,7 @@ func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activ
 	elements, err := c.getElements("activity", queryFields)
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("Could not retrieve activities for query %+v %s", queryFields, err.Error())
 	}
 
 	activities := make([]Activity, len(elements), len(elements))
