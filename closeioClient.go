@@ -36,6 +36,8 @@ type CloseIoClient interface {
 	UpdateAddress(address Address, leadID string) error
 
 	GetAllUsers() ([]User, error)
+
+	GetLeadStatuses() ([]Status, error)
 }
 
 const limit = 100
