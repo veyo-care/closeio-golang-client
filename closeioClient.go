@@ -21,6 +21,7 @@ type CloseIoClient interface {
 	SendActivity(activity *Activity) error
 	GetAllActivities() ([]Activity, error)
 	GetActivities(leadId string) ([]Activity, error)
+	UpdateActivity(activity *Activity) error
 
 	SendOpportunity(opportunity *Opportunity) error
 	GetOpportunities() ([]Opportunity, error)
@@ -253,26 +254,49 @@ func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activ
 }
 
 func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
-	var path string
-	switch activity.Type {
-	case "Email":
-		path = "activity/email"
-	case "Note":
-		path = "activity/note"
-	case "Call":
-		path = "activity/call"
-	default:
-		return fmt.Errorf("Activity type %s is not supported for creation", activity.Type)
+	path, err := getActivityPath(activity)
+	if err != nil {
+		return err
 	}
 	content, _ := json.Marshal(activity)
 	body := bytes.NewBuffer(content)
 
-	_, err := c.getResponse("POST", path, nil, body)
+	_, err = c.getResponse("POST", path, nil, body)
 
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func (c HttpCloseIoClient) UpdateActivity(activity *Activity) error {
+	path, err := getActivityPath(activity)
+	if err != nil {
+		return err
+	}
+	completePath := fmt.Sprintf("%s/%s/", path, activity.ID)
+	content, _ := json.Marshal(activity)
+	body := bytes.NewBuffer(content)
+
+	_, err = c.getResponse("PUT", completePath, nil, body)
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func getActivityPath(activity *Activity) (string, error) {
+	switch activity.Type {
+	case "Email":
+		return "activity/email", nil
+	case "Note":
+		return "activity/note", nil
+	case "Call":
+		return "activity/call", nil
+	default:
+		return "", fmt.Errorf("Activity type %s is not supported for creation", activity.Type)
+	}
 }
 
 func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
