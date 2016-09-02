@@ -28,6 +28,7 @@ type CloseIoClient interface {
 
 	SendTask(task *Task) error
 	DeleteTask(taskID string) error
+	UpdateTask(task *Task) error
 
 	CreateContact(contact *Contact) (*Contact, error)
 	UpdateContact(contact *Contact) (*Contact, error)
@@ -382,6 +383,18 @@ func (c HttpCloseIoClient) SendTask(task *Task) error {
 func (c HttpCloseIoClient) DeleteTask(taskID string) error {
 	_, err := c.getResponse("DELETE", fmt.Sprintf("task/%s", taskID), nil, nil)
 
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (c HttpCloseIoClient) UpdateTask(task *Task) error {
+	content, _ := json.Marshal(task)
+
+	body := bytes.NewBuffer(content)
+
+	_, err := c.getResponse("PUT", "task/"+task.ID, nil, body)
 	if err != nil {
 		return err
 	}
