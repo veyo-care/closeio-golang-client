@@ -275,7 +275,7 @@ func (c HttpCloseIoClient) UpdateActivity(activity *Activity) error {
 	if err != nil {
 		return err
 	}
-	completePath := fmt.Sprintf("%s/%s/", path, activity.ID)
+	completePath := fmt.Sprintf("%s/%s", path, activity.ID)
 	content, _ := json.Marshal(activity)
 	body := bytes.NewBuffer(content)
 
