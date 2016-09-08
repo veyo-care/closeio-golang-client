@@ -17,6 +17,7 @@ type CloseIoClient interface {
 	GetAllLeads() ([]Lead, error)
 	DeleteLead(leadID string) error
 	UpdateLead(lead *Lead) (*Lead, error)
+	UpdateLeadStatus(leadId, statusId string) (*Lead, error)
 
 	SendActivity(activity *Activity) error
 	GetAllActivities() ([]Activity, error)
@@ -83,12 +84,25 @@ func (c HttpCloseIoClient) DeleteLead(leadID string) error {
 	return nil
 }
 
+func (c HttpCloseIoClient) UpdateLeadStatus(leadID, statusId string) (*Lead, error) {
+	message := struct {
+		StatusID string `json:"status_id"`
+	}{statusId}
+
+	content, _ := json.Marshal(message)
+	return c.actionOnObject("PUT", fmt.Sprintf("lead/%s", leadID), content)
+}
+
 func (c HttpCloseIoClient) UpdateLead(lead *Lead) (*Lead, error) {
 	return c.actionOnLead("PUT", fmt.Sprintf("lead/%s", lead.ID), lead)
 }
 
 func (c HttpCloseIoClient) actionOnLead(method string, route string, lead *Lead) (*Lead, error) {
 	content, _ := json.Marshal(lead)
+	return c.actionOnObject(method, route, content)
+}
+
+func (c HttpCloseIoClient) actionOnObject(method string, route string, content []byte) (*Lead, error) {
 	body := bytes.NewBuffer(content)
 
 	responseBody, err := c.getResponse(method, route, nil, body)
