@@ -8,12 +8,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type CloseIoClient interface {
 	SendLead(lead *Lead) (*Lead, error)
 	GetLead(leadID string) (*Lead, error)
-	GetLeads(queryFields map[string]string) ([]Lead, error)
+	GetLeads(queryFields map[string][]string) ([]Lead, error)
 	GetAllLeads() ([]Lead, error)
 	DeleteLead(leadID string) error
 	UpdateLead(lead *Lead) (*Lead, error)
@@ -122,7 +123,7 @@ func (c HttpCloseIoClient) GetAllLeads() ([]Lead, error) {
 	return c.GetLeads(nil)
 }
 
-func (c HttpCloseIoClient) GetLeads(queryFields map[string]string) ([]Lead, error) {
+func (c HttpCloseIoClient) GetLeads(queryFields map[string][]string) ([]Lead, error) {
 
 	query := make(map[string]string)
 
@@ -215,21 +216,27 @@ func (c HttpCloseIoClient) DeleteContact(contactID string) error {
 	return nil
 }
 
-func convertQueryFields(queryFields map[string]string) string {
+func convertQueryFields(queryFields map[string][]string) string {
 	if queryFields == nil {
 		return ""
 	}
 
-	var query = ""
-	for key, value := range queryFields {
-		if query == "" {
-			query = fmt.Sprintf(`%s:"%s"`, key, value)
-		} else {
-			query = fmt.Sprintf(`%s AND %s:"%s"`, query, key, value)
+	andValues := make([]string, len(queryFields), len(queryFields))
+
+	i := 0
+	for key, values := range queryFields {
+
+		orValues := make([]string, len(values), len(values))
+
+		for k, value := range values {
+			orValues[k] = fmt.Sprintf(`%s:"%s"`, key, value)
 		}
+
+		andValues[i] = fmt.Sprintf("(%s)", strings.Join(orValues, " OR "))
+		i++
 	}
 
-	return query
+	return strings.Join(andValues, " AND ")
 }
 
 func (c HttpCloseIoClient) GetAllActivities() ([]Activity, error) {
