@@ -15,6 +15,7 @@ type CloseIoClient interface {
 	SendLead(lead *Lead) (*Lead, error)
 	GetLead(leadID string) (*Lead, error)
 	GetLeads(queryFields map[string][]string) ([]Lead, error)
+	GetLeadsWithRawQuery(queryString string) ([]Lead, error)
 	GetAllLeads() ([]Lead, error)
 	DeleteLead(leadID string) error
 	UpdateLead(lead *Lead) (*Lead, error)
@@ -130,6 +131,35 @@ func (c HttpCloseIoClient) GetLeads(queryFields map[string][]string) ([]Lead, er
 	if queryString := convertQueryFields(queryFields); queryString != "" {
 		query["query"] = queryString
 	}
+
+	elements, err := c.getElements("lead", query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	leads := make([]Lead, len(elements), len(elements))
+
+	for i, element := range elements {
+		var lead Lead
+
+		err = json.Unmarshal([]byte(element), &lead)
+
+		if err != nil {
+			return nil, err
+		}
+
+		leads[i] = lead
+
+	}
+
+	return leads, nil
+}
+
+func (c HttpCloseIoClient) GetLeadsWithRawQuery(queryString string) ([]Lead, error) {
+	query := make(map[string]string)
+
+	query["query"] = queryString
 
 	elements, err := c.getElements("lead", query)
 
