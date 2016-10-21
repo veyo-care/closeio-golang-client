@@ -45,7 +45,7 @@ type CloseIoClient interface {
 	GetLeadStatuses() ([]Status, error)
 }
 
-const limit = 100
+const limit = 100 //maximum set by closeio
 
 type HttpCloseIoClient struct {
 	apiKey string
@@ -377,46 +377,83 @@ func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 	return opportunities, nil
 }
 
-func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([]json.RawMessage, error) {
+const n = 5
 
+func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([]json.RawMessage, error) {
 	if query == nil {
 		query = make(map[string]string)
 	}
 
-	skip := 0
+	results := make(chan resp)
+	jobs := make(chan req)
+	inWork := 0
+
+	for i := 0; i < n; i++ {
+		go c.httpWorker(jobs, results)
+		inWork = sendJob(jobs, i, route, query, inWork)
+	}
 
 	blobs := []json.RawMessage{}
 
-	finish := false
-	//Stop when a get a bad request
-	for !finish {
-
-		query["_skip"] = strconv.Itoa(skip)
-		query["_limit"] = strconv.Itoa(limit)
-
-		body, err := c.getResponse("GET", route, query, nil)
-
-		if err != nil {
-			return nil, err
+	id := n
+	lastRound := false
+	for result := range results {
+		inWork--
+		if result.err != nil {
+			return nil, result.err
 		}
+		blobs = append(blobs, result.blobs...)
+		if result.hasMore && !lastRound {
+			inWork = sendJob(jobs, id, route, query, inWork)
+			id++
+		} else {
+			lastRound = false
+		}
+		if inWork == 0 {
+			close(results)
+			close(jobs)
+		}
+	}
+	return blobs, nil
+}
 
+func sendJob(jobs chan req, id int, route string, query map[string]string, inWork int) int {
+	skip := id * limit
+	query["_limit"] = strconv.Itoa(limit)
+	query["_skip"] = strconv.Itoa(skip)
+	jobs <- req{id, route, query}
+	return inWork + 1
+}
+
+type req struct {
+	id    int
+	route string
+	query map[string]string
+}
+
+type resp struct {
+	id      int
+	blobs   []json.RawMessage
+	hasMore bool
+	err     error
+}
+
+func (c HttpCloseIoClient) httpWorker(jobs chan req, results chan resp) {
+	for j := range jobs {
+		body, err := c.getResponse("GET", j.route, j.query, nil)
+		if err != nil {
+			results <- resp{err: err}
+		}
 		response := struct {
 			Blobs   []json.RawMessage `json:"data"`
 			HasMore bool              `json:"has_more"`
 		}{}
-
 		err = json.Unmarshal(body, &response)
 		if err != nil {
-			return nil, fmt.Errorf("Error while deserializing json %s", err.Error())
+			results <- resp{err: fmt.Errorf("Error while deserializing json %s", err.Error())}
 		}
-
-		finish = !response.HasMore
-		blobs = append(blobs, response.Blobs...)
-		skip = skip + limit
-
+		results <- resp{j.id, response.Blobs, response.HasMore, err}
 	}
-
-	return blobs, nil
 }
 
 func (c HttpCloseIoClient) SendTask(task *Task) error {
