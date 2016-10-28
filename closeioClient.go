@@ -407,7 +407,7 @@ func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([
 			inWork = sendJob(jobs, id, route, query, inWork)
 			id++
 		} else {
-			lastRound = false
+			lastRound = true
 		}
 		if inWork == 0 {
 			close(results)
