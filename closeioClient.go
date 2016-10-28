@@ -380,38 +380,24 @@ func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 const n = 5
 
 func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([]json.RawMessage, error) {
+
 	if query == nil {
 		query = make(map[string]string)
 	}
 
 	results := make(chan resp)
 	jobs := make(chan req)
-	blobs := []json.RawMessage{}
 	inWork := 0
-	id := 0
 
 	for i := 0; i < n; i++ {
 		go c.httpWorker(jobs, results)
+		sendJob(jobs, i, route, query)
+		inWork++
 	}
 
-	//do not do n requests for the simple case
-	inWork, id = sendJob(jobs, 0, route, query, inWork)
-	first := <-results
-	inWork--
-	if first.err != nil {
-		return nil, first.err
-	}
-	blobs = append(blobs, first.blobs...)
-	if !first.hasMore {
-		close(results)
-		close(jobs)
-		return blobs, nil
-	}
+	blobs := []json.RawMessage{}
 
-	for i := 1; i < n+1; i++ {
-		inWork, id = sendJob(jobs, i, route, query, inWork)
-	}
-
+	id := n
 	lastRound := false
 	for result := range results {
 		inWork--
@@ -420,7 +406,9 @@ func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([
 		}
 		blobs = append(blobs, result.blobs...)
 		if result.hasMore && !lastRound {
-			inWork, id = sendJob(jobs, id, route, query, inWork)
+			sendJob(jobs, id, route, query)
+			inWork++
+			id++
 		} else {
 			lastRound = true
 		}
@@ -432,12 +420,22 @@ func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([
 	return blobs, nil
 }
 
-func sendJob(jobs chan req, id int, route string, query map[string]string, inWork int) (int, int) {
+func copyQuery(query map[string]string) map[string]string {
+	copy := make(map[string]string)
+
+	for key, value := range query {
+		copy[key] = value
+	}
+
+	return copy
+}
+
+func sendJob(jobs chan req, id int, route string, query map[string]string) {
+	copy := copyQuery(query)
 	skip := id * limit
-	query["_limit"] = strconv.Itoa(limit)
-	query["_skip"] = strconv.Itoa(skip)
-	jobs <- req{id, route, query}
-	return inWork + 1, id + 1
+	copy["_limit"] = strconv.Itoa(limit)
+	copy["_skip"] = strconv.Itoa(skip)
+	jobs <- req{id, route, copy}
 }
 
 type req struct {
