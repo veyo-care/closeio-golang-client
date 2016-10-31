@@ -377,7 +377,7 @@ func (c HttpCloseIoClient) GetOpportunities() ([]Opportunity, error) {
 	return opportunities, nil
 }
 
-const n = 1
+const n = 5
 
 func (c HttpCloseIoClient) getElements(route string, query map[string]string) ([]json.RawMessage, error) {
 
