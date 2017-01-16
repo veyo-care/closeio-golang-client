@@ -18,7 +18,7 @@ type Address struct {
 	State   string `json:"state,omitempty"`
 	Country string `json:"country,omitempty"`
 	Zipcode string `json:"zipcode,omitempty"`
-	Address string `json:"address,omitempty"`
+	Address string `json:"address_1,omitempty"`
 }
 
 type Email struct {
