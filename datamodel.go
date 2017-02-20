@@ -179,25 +179,25 @@ type Attachment struct {
 }
 
 type Lead struct {
-	Addresses      []Address         `json:"addresses,omitempty"`
-	Contacts       []Contact         `json:"contacts,omitempty"`
-	CreationDate   *time.Time        `json:"date_created,omitempty"`
-	Custom         map[string]string `json:"custom,omitempty"`
-	Description    string            `json:"description,omitempty"`
-	DisplayName    string            `json:"display_name,omitempty"`
-	HtmlURL        string            `json:"html_url,omitempty"`
-	ID             string            `json:"id,omitempty"`
-	Name           string            `json:"name,omitempty"`
-	OrganizationID string            `json:"organization_id,omitempty"`
-	Opportunities  []Opportunity     `json:"opportunities,omitempty"`
-	StatusID       string            `json:"status_id,omitempty"`
-	StatusLabel    string            `json:"status_label,omitempty"`
-	Tasks          []Task            `json:"tasks,omitempty"`
-	UpdatedBy      string            `json:"updated_by,omitempty"`
-	UpdatedByName  string            `json:"updated_by_name,omitempty"`
-	URL            string            `json:"url,omitempty"`
-	CreatedBy      string            `json:"created_by,omitempty"`
-	CreatedName    string            `json:"created_by_name,omitempty"`
+	Addresses      []Address              `json:"addresses,omitempty"`
+	Contacts       []Contact              `json:"contacts,omitempty"`
+	CreationDate   *time.Time             `json:"date_created,omitempty"`
+	Custom         map[string]interface{} `json:"custom,omitempty"`
+	Description    string                 `json:"description,omitempty"`
+	DisplayName    string                 `json:"display_name,omitempty"`
+	HtmlURL        string                 `json:"html_url,omitempty"`
+	ID             string                 `json:"id,omitempty"`
+	Name           string                 `json:"name,omitempty"`
+	OrganizationID string                 `json:"organization_id,omitempty"`
+	Opportunities  []Opportunity          `json:"opportunities,omitempty"`
+	StatusID       string                 `json:"status_id,omitempty"`
+	StatusLabel    string                 `json:"status_label,omitempty"`
+	Tasks          []Task                 `json:"tasks,omitempty"`
+	UpdatedBy      string                 `json:"updated_by,omitempty"`
+	UpdatedByName  string                 `json:"updated_by_name,omitempty"`
+	URL            string                 `json:"url,omitempty"`
+	CreatedBy      string                 `json:"created_by,omitempty"`
+	CreatedName    string                 `json:"created_by_name,omitempty"`
 
 	Activities []Activity `json:"activities,omitempty`
 }
