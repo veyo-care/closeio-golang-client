@@ -3,6 +3,7 @@ package closeio
 import "time"
 
 type Contact struct {
+	LeadID      string     `json:"lead_id,omitempty"`
 	CreatedBy   string     `json:"created_by,omitempty"`
 	DateCreated *time.Time `json:"date_created,omitempty"`
 	DateUpdated *time.Time `json:"date_updated,omitempty"`
