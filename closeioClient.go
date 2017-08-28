@@ -100,7 +100,16 @@ func (c HttpCloseIoClient) UpdateLead(lead *Lead) (*Lead, error) {
 }
 
 func (c HttpCloseIoClient) actionOnLead(method string, route string, lead *Lead) (*Lead, error) {
-	content, _ := json.Marshal(lead)
+	if lead == nil {
+		return nil, nil
+	}
+
+	content, err := LeadToJSON(*lead)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return c.actionOnObject(method, route, content)
 }
 
@@ -112,12 +121,14 @@ func (c HttpCloseIoClient) actionOnObject(method string, route string, content [
 	if err != nil {
 		return nil, err
 	}
-	var responseLead Lead
-	err = json.Unmarshal(responseBody, &responseLead)
+
+	lead, err := JSONToLead(responseBody)
+
 	if err != nil {
 		return nil, err
 	}
-	return &responseLead, nil
+
+	return lead, nil
 }
 
 func (c HttpCloseIoClient) GetAllLeads() ([]Lead, error) {
