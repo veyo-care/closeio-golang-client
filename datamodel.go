@@ -257,7 +257,7 @@ type Task struct {
 	DateCreated    *time.Time `json:"date_created,omitempty"`
 	DateUpdated    *time.Time `json:"date_updated,omitempty"`
 	ID             string     `json:"id,omitempty"`
-	IsComplete     bool       `json:"is_complete,omitempty"`
+	IsComplete     *bool      `json:"is_complete,omitempty"`
 	IsDateLess     bool       `json:"is_dateless,omitempty"`
 	LeadID         string     `json:"lead_id,omitempty"`
 	LeadName       string     `json:"lead_name,omitempty"`

@@ -21,6 +21,8 @@ type CloseIoClient interface {
 	UpdateLead(lead *Lead) (*Lead, error)
 	UpdateLeadStatus(leadId, statusId string) (*Lead, error)
 
+	GetTasks(model Task) ([]Task, error)
+
 	SendActivity(activity *Activity) error
 	GetAllActivities() ([]Activity, error)
 	GetActivities(leadId string) ([]Activity, error)
@@ -165,6 +167,49 @@ func (c HttpCloseIoClient) GetLeads(queryFields map[string][]string) ([]Lead, er
 	}
 
 	return leads, nil
+}
+
+func (c HttpCloseIoClient) GetTasks(task Task) ([]Task, error) {
+	query := make(map[string]string)
+
+	if task.AssignedTo != "" {
+		query["assigned_to"] = task.AssignedTo
+	}
+
+	if task.IsComplete != nil {
+		query["is_complete"] = strconv.FormatBool(*task.IsComplete)
+	}
+
+	if task.LeadID != "" {
+		query["lead_id"] = task.LeadID
+	}
+
+	if task.View != "" {
+		query["view"] = task.View
+	}
+
+	elements, err := c.getElements("task", query)
+
+	if err != nil {
+		return nil, err
+	}
+
+	tasks := make([]Task, len(elements), len(elements))
+
+	for i, element := range elements {
+		var task Task
+
+		err = json.Unmarshal([]byte(element), &task)
+
+		if err != nil {
+			return nil, err
+		}
+
+		tasks[i] = task
+
+	}
+
+	return tasks, nil
 }
 
 func (c HttpCloseIoClient) GetLeadsWithRawQuery(queryString string) ([]Lead, error) {
