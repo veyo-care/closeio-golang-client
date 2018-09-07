@@ -69,12 +69,11 @@ func (c HttpCloseIoClient) GetLead(leadID string) (*Lead, error) {
 		return nil, err
 	}
 
-	var responseLead Lead
-	err = json.Unmarshal(responseBody, &responseLead)
+	lead, err := JSONToLead(responseBody)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error deserializing lead - %s", err.Error())
 	}
-	return &responseLead, nil
+	return lead, nil
 }
 
 func (c HttpCloseIoClient) DeleteLead(leadID string) error {
