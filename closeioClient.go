@@ -9,7 +9,22 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
+
+type ActivityType string
+
+const (
+	ActivityCall ActivityType = "/call"
+	ActivityAll  ActivityType = ""
+)
+
+type ActivityParams struct {
+	LeadID string
+	From   *time.Time
+	To     *time.Time
+	Filter ActivityType
+}
 
 type CloseIoClient interface {
 	SendLead(lead *Lead) (*Lead, error)
@@ -25,7 +40,7 @@ type CloseIoClient interface {
 
 	SendActivity(activity *Activity) error
 	GetAllActivities() ([]Activity, error)
-	GetActivities(leadId string) ([]Activity, error)
+	GetActivities(params ActivityParams) ([]Activity, error)
 	UpdateActivity(activity *Activity) error
 
 	SendOpportunity(opportunity *Opportunity) error
@@ -325,18 +340,17 @@ func convertQueryFields(queryFields map[string][]string) string {
 }
 
 func (c HttpCloseIoClient) GetAllActivities() ([]Activity, error) {
-	return c.getActivities(nil)
+	return c.getActivities(nil, ActivityAll)
 }
 
-func (c HttpCloseIoClient) GetActivities(leadId string) ([]Activity, error) {
+func (c HttpCloseIoClient) getActivities(queryFields map[string]string, filter ActivityType) ([]Activity, error) {
+	route := "activity"
 
-	query := map[string]string{"lead_id": leadId}
-	return c.getActivities(query)
-}
+	if filter == ActivityCall {
+		route = route + string(ActivityCall)
+	}
 
-func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activity, error) {
-
-	elements, err := c.getElements("activity", queryFields)
+	elements, err := c.getElements(route, queryFields)
 
 	if err != nil {
 		return nil, fmt.Errorf("Could not retrieve activities for query %+v %s", queryFields, err.Error())
@@ -358,6 +372,24 @@ func (c HttpCloseIoClient) getActivities(queryFields map[string]string) ([]Activ
 	}
 
 	return activities, nil
+}
+
+func (c HttpCloseIoClient) GetActivities(params ActivityParams) ([]Activity, error) {
+	query := map[string]string{}
+
+	if params.LeadID != "" {
+		query["lead_id"] = params.LeadID
+	}
+
+	if params.From != nil {
+		query["date_created__gt"] = params.From.Format("2006-01-02")
+	}
+
+	if params.To != nil {
+		query["date_created__lt"] = params.To.Format("2006-01-02")
+	}
+
+	return c.getActivities(query, params.Filter)
 }
 
 func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
