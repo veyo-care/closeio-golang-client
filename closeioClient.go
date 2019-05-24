@@ -403,7 +403,9 @@ func (c HttpCloseIoClient) SendActivity(activity *Activity) error {
 	_, err = c.getResponse("POST", path, nil, body)
 
 	if err != nil {
-		return err
+		if _, err = c.getResponse("POST", path, nil, bytes.NewBuffer(content)); err != nil {
+			return err
+		}
 	}
 	return nil
 }
