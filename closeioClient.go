@@ -697,7 +697,7 @@ func getResponse(request *http.Request) ([]byte, error) {
 		return nil, fmt.Errorf("Could not read response body - err %s, request %+v", err.Error(), request)
 	}
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("Got status %d from request %+v, %s", resp.StatusCode, request, string(raw))
 	}
 
@@ -707,4 +707,16 @@ func getResponse(request *http.Request) ([]byte, error) {
 func (c HttpCloseIoClient) fillRequest(request *http.Request) {
 	request.Header.Set("Content-Type", "application/json")
 	request.SetBasicAuth(c.apiKey, "")
+}
+
+func (c HttpCloseIoClient) SubscribeSequence(sequence *Sequence) error {
+	content, _ := json.Marshal(sequence)
+
+	body := bytes.NewBuffer(content)
+
+	_, err := c.getResponse("POST", "sequence_subscription", nil, body)
+	if err != nil {
+		return err
+	}
+	return nil
 }

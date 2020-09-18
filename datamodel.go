@@ -315,3 +315,12 @@ type User struct {
 	DateCreated   time.Time `json:"date_created,omitempty"`
 	DateUpdated   time.Time `json:"date_updated,omitempty"`
 }
+
+type Sequence struct {
+	SequenceID      string `json:"sequence_id,omitempty"`
+	ContactID       string `json:"contact_id,omitempty"`
+	ContactEmail    string `json:"contact_email,omitempty"`
+	SenderAccountID string `json:"sender_account_id,omitempty"`
+	SenderName      string `json:"sender_name,omitempty"`
+	SenderEmail     string `json:"sender_email,omitempty"`
+}
